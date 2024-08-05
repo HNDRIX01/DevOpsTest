@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qrcodeatb_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+    networks:
+      - my_custom_network
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: qrcodeatb
+      DB_USERNAME: ADMIN
+      DB_PASSWORD: ATBqrcodeSTAGE
+
+  web:
+    image: nginx:alpine
+    container_name: qrcodeatb_web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - my_custom_network
+
+  db:
+    image: mysql:5.7
+    container_name: qrcodeatb_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: qrcodeatb
+      MYSQL_USER: ADMIN
+      MYSQL_PASSWORD: ATBqrcodeSTAGE
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./qrcodeatb.sql:/docker-entrypoint-initdb.d/qrcodeatb.sql
+    networks:
+      - my_custom_network
+
+networks:
+  my_custom_network:
+    driver: bridge
+
+volumes:
+  db_data:
+

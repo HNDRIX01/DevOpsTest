@@ -1,0 +1,15 @@
+{
+    "menu": [
+        {
+            "url": "/",
+            "name": "Dashboard",
+            "slug": "dashboard",
+            "icon": "feather icon-home"
+        },
+        {
+            "url": "campaigns",
+            "name": "campaign.title",
+            "icon": "feather icon-aperture"
+        }
+    ]
+}
